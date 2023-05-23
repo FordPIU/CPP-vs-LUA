@@ -1,0 +1,2 @@
+D:\Github\CPP-vs-LUA\build\Debug\lua.dll
+D:\Github\CPP-vs-LUA\build\FiveLang.dir\Debug\FiveLang.vcxproj.CopyComplete
