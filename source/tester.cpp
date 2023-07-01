@@ -29,7 +29,7 @@ vector<string> requestInput(string Title)
 
 int applyArgOperator(string arg, char op)
 {
-    vector<string> hs = splitString(arg, '*');
+    vector<string> hs = splitString(arg, op);
     int lhsVal = stoi(hs[0]);
     int rhsVal = stoi(hs[1]);
 
