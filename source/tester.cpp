@@ -51,6 +51,39 @@ int applyArgOperator(string arg, char op)
     }
 }
 
+void poutResourceUsage()
+{
+    // Total Virtual Memory
+    DWORDLONG totalVirtualMemory = getTotalVirtualMemory();
+    string totalVirtualMemoryStr = getHighestMemoryUnit(totalVirtualMemory);
+    print("Total Virtual Memory: " + totalVirtualMemoryStr, "grey");
+
+    // Virtual Memory currently used
+    DWORDLONG virtualMemoryUsed = getVirtualMemoryUsed();
+    string virtualMemoryUsedStr = getHighestMemoryUnit(virtualMemoryUsed);
+    print("Virtual Memory currently used: " + virtualMemoryUsedStr, "grey");
+
+    // Virtual Memory currently used by current process
+    SIZE_T virtualMemoryUsedByProcess = getVirtualMemoryUsedByProcess();
+    string virtualMemoryUsedByProcessStr = getHighestMemoryUnit(virtualMemoryUsedByProcess);
+    print("Virtual Memory currently used by current process: " + virtualMemoryUsedByProcessStr, "yellow");
+
+    // Total Physical Memory (RAM)
+    DWORDLONG totalPhysicalMemory = getTotalPhysicalMemory();
+    string totalPhysicalMemoryStr = getHighestMemoryUnit(totalPhysicalMemory);
+    print("Total Physical Memory: " + totalPhysicalMemoryStr, "grey");
+
+    // Physical Memory currently used
+    DWORDLONG physicalMemoryUsed = getPhysicalMemoryUsed();
+    string physicalMemoryUsedStr = getHighestMemoryUnit(physicalMemoryUsed);
+    print("Physical Memory currently used: " + physicalMemoryUsedStr, "grey");
+
+    // Physical Memory currently used by current process
+    SIZE_T physicalMemoryUsedByProcess = getPhysicalMemoryUsedByProcess();
+    string physicalMemoryUsedByProcessStr = getHighestMemoryUnit(physicalMemoryUsedByProcess);
+    print("Physical Memory currently used by current process: " + physicalMemoryUsedByProcessStr, "yellow");
+}
+
 int main()
 {
     while (true)
@@ -92,37 +125,7 @@ int main()
             Timer timer;
 
             // Resource Usage
-            {
-                // Total Virtual Memory
-                DWORDLONG totalVirtualMemory = getTotalVirtualMemory();
-                string totalVirtualMemoryStr = getHighestMemoryUnit(totalVirtualMemory);
-                print("Total Virtual Memory: " + totalVirtualMemoryStr, "grey");
-
-                // Virtual Memory currently used
-                DWORDLONG virtualMemoryUsed = getVirtualMemoryUsed();
-                string virtualMemoryUsedStr = getHighestMemoryUnit(virtualMemoryUsed);
-                print("Virtual Memory currently used: " + virtualMemoryUsedStr, "grey");
-
-                // Virtual Memory currently used by current process
-                SIZE_T virtualMemoryUsedByProcess = getVirtualMemoryUsedByProcess();
-                string virtualMemoryUsedByProcessStr = getHighestMemoryUnit(virtualMemoryUsedByProcess);
-                print("Virtual Memory currently used by current process: " + virtualMemoryUsedByProcessStr, "yellow");
-
-                // Total Physical Memory (RAM)
-                DWORDLONG totalPhysicalMemory = getTotalPhysicalMemory();
-                string totalPhysicalMemoryStr = getHighestMemoryUnit(totalPhysicalMemory);
-                print("Total Physical Memory: " + totalPhysicalMemoryStr, "grey");
-
-                // Physical Memory currently used
-                DWORDLONG physicalMemoryUsed = getPhysicalMemoryUsed();
-                string physicalMemoryUsedStr = getHighestMemoryUnit(physicalMemoryUsed);
-                print("Physical Memory currently used: " + physicalMemoryUsedStr, "grey");
-
-                // Physical Memory currently used by current process
-                SIZE_T physicalMemoryUsedByProcess = getPhysicalMemoryUsedByProcess();
-                string physicalMemoryUsedByProcessStr = getHighestMemoryUnit(physicalMemoryUsedByProcess);
-                print("Physical Memory currently used by current process: " + physicalMemoryUsedByProcessStr, "yellow");
-            }
+            poutResourceUsage();
 
             // CPP Bubblesort
             {
