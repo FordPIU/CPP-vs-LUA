@@ -32,6 +32,7 @@ public:
     std::vector<int> getToSort() { return toSort; }
 
     void CPP();
+    void CPPMT();
     void LUA(lua_State *L, luabridge::LuaRef toSortTable);
 
 private:

@@ -57,6 +57,10 @@
     "xtree": "cpp",
     "xutility": "cpp",
     "sstream": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "ratio": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp",
+    "fstream": "cpp"
   }
 }

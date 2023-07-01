@@ -1,4 +1,8 @@
+#include <cctype>
+#include <algorithm>
 #include "console.h"
+
+using namespace std;
 
 bool hasAnythingPrinted = false;
 
@@ -9,8 +13,18 @@ void setTextColor(int colorCode)
     SetConsoleTextAttribute(col, colorCode);
 }
 
-int getTextColorFromString(std::string plainColor)
+string toLowercase(const string &input)
 {
+    string result = input;
+    transform(result.begin(), result.end(), result.begin(),
+              [](unsigned char c)
+              { return tolower(c); });
+    return result;
+}
+
+int getTextColorFromString(string plainColor)
+{
+    string lwrPlainColor = toLowercase(plainColor);
     /*
     1  : Blue
     2  : Green
@@ -29,29 +43,33 @@ int getTextColorFromString(std::string plainColor)
     15 : Bright white
     */
 
-    if (plainColor == "red")
+    if (lwrPlainColor == "red")
     {
         return 4;
     }
-    if (plainColor == "blue")
+    if (lwrPlainColor == "blue")
     {
         return 1;
     }
-    if (plainColor == "brightblue")
+    if (lwrPlainColor == "brightblue")
     {
         return 9;
     }
-    if (plainColor == "green")
+    if (lwrPlainColor == "green")
     {
         return 2;
     }
-    if (plainColor == "yellow")
+    if (lwrPlainColor == "yellow")
     {
         return 14;
     }
-    if (plainColor == "brightwhite")
+    if (lwrPlainColor == "brightwhite")
     {
         return 15;
+    }
+    if (lwrPlainColor == "grey")
+    {
+        return 8;
     }
 
     return 7;
@@ -60,16 +78,16 @@ int getTextColorFromString(std::string plainColor)
 ///////////
 
 // String Print
-void Console::print(std::string printString)
+void Console::print(string printString)
 {
     if (hasAnythingPrinted)
     {
-        std::cout << '\n'
-                  << printString;
+        cout << '\n'
+             << printString;
     }
     else
     {
-        std::cout << printString;
+        cout << printString;
         hasAnythingPrinted = true;
     }
 }
@@ -79,18 +97,18 @@ void Console::print(int printNum)
 {
     if (hasAnythingPrinted)
     {
-        std::cout << '\n'
-                  << std::to_string(printNum);
+        cout << '\n'
+             << to_string(printNum);
     }
     else
     {
-        std::cout << std::to_string(printNum);
+        cout << to_string(printNum);
         hasAnythingPrinted = true;
     }
 }
 
 // String Colored Print
-void Console::print(std::string printString, std::string printColor)
+void Console::print(string printString, string printColor)
 {
     // Coloring
     setTextColor(getTextColorFromString(printColor));
@@ -98,23 +116,23 @@ void Console::print(std::string printString, std::string printColor)
     // Printing
     if (hasAnythingPrinted)
     {
-        std::cout << '\n'
-                  << printString;
+        cout << '\n'
+             << printString;
     }
     else
     {
-        std::cout << printString;
+        cout << printString;
         hasAnythingPrinted = true;
     }
 }
 
 // String Input
-std::string Console::input(std::string header)
+string Console::input(string header)
 {
-    std::string output = "";
+    string output = "";
 
     Console::print(header + ": ", "red");
-    getline(std::cin, output);
+    getline(cin, output);
 
     return output;
 }
