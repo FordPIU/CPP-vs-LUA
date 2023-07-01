@@ -21,6 +21,36 @@ vector<string> splitString(const string &input, char delimiter)
     return tokens;
 }
 
+vector<string> requestInput(string Title)
+{
+    string command = input(Title);
+    return splitString(command, ' ');
+}
+
+int applyArgOperator(string arg, char op)
+{
+    vector<string> hs = splitString(arg, '*');
+    int lhsVal = stoi(hs[0]);
+    int rhsVal = stoi(hs[1]);
+
+    if (op == '*')
+    {
+        return lhsVal * rhsVal;
+    }
+    if (op == '/')
+    {
+        return lhsVal / rhsVal;
+    }
+    if (op == '+')
+    {
+        return lhsVal + rhsVal;
+    }
+    if (op == '-')
+    {
+        return lhsVal - rhsVal;
+    }
+}
+
 int main()
 {
     while (true)
@@ -32,31 +62,29 @@ int main()
         print("--------------------", "yellow");
 
         // Input and Arguments
-        string command = input("Execute Test");
-        vector<string> arguments = splitString(command, ' ');
+        vector<string> args = requestInput("Execute Test");
+
+        // Gets the optional Argument of sort size.
+        int sortSize = 100;
+
+        if (args.size() > 1)
+        {
+            string arg = args[1];
+            size_t operatorPos = arg.find_first_of("*/+-");
+
+            if (operatorPos != string::npos)
+            {
+                sortSize = applyArgOperator(arg, arg[operatorPos]);
+            }
+            else
+            {
+                sortSize = stoi(arg);
+            }
+        }
 
         // Master Handler
-        if (arguments[0] == "bubblesort")
+        if (args[0] == "bubblesort")
         {
-            // Gets the optional Argument of sort size.
-            int sortSize = 100;
-
-            if (arguments.size() > 1)
-            {
-                string arg = arguments[1];
-                if (arg.find("*") != string::npos)
-                {
-                    vector<string> hs = splitString(arg, '*');
-                    int lhsVal = stoi(hs[0]);
-                    int rhsVal = stoi(hs[1]);
-                    sortSize = lhsVal * rhsVal;
-                }
-                else
-                {
-                    sortSize = stoi(arg);
-                }
-            }
-
             // Init Bobble Sort with Sort Size
             BubbleSort bubblesort(sortSize);
 
