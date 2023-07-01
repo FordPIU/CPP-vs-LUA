@@ -1,3 +1,0 @@
-D:/Github/CPP-vs-LUA/build/CMakeFiles/FiveLang.dir
-D:/Github/CPP-vs-LUA/build/CMakeFiles/ALL_BUILD.dir
-D:/Github/CPP-vs-LUA/build/CMakeFiles/ZERO_CHECK.dir
