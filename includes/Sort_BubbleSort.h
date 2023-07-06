@@ -15,7 +15,7 @@ public:
     vector<int> CPP() override
     {
         vector<int> orgArray = getToSort();
-        int arrayLength = orgArray.size();
+        int arrayLength = static_cast<int>(orgArray.size());
         bool swapped;
 
         for (int i = 0; i < arrayLength - 1; ++i)

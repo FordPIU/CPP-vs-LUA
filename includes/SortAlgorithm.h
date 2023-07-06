@@ -29,7 +29,7 @@ public:
     }
 
     vector<int> getToSort() { return toSort; }
-    int getToSortSize() { return toSort.size(); }
+    int getToSortSize() { return static_cast<int>(toSort.size()); }
 
     virtual string getAlgo() = 0;
 
