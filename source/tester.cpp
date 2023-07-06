@@ -1,11 +1,31 @@
+#include <sstream>
+
 #include "main.h"
 #include "getResources.h"
 #include "getHighestUnit.h"
 
-#include "sorter_bubble.h"
+#include "SortAlgorithm.h"
+#include "Sort_BubbleSort.h"
+#include "Sort_QuickSort.h"
+
 #include "timer.h"
 
 //////////////////////////////
+
+void printArray(int inout, vector<int> array)
+{
+    HANDLE col;
+    col = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(col, 11);
+
+    cout << endl
+         << ((inout == 0) ? "In: " : "Out: ");
+    for (auto &number : array)
+    {
+        cout << to_string(number) + ", ";
+    }
+    cout << endl;
+}
 
 vector<string> splitString(const string &input, char delimiter)
 {
@@ -27,28 +47,40 @@ vector<string> requestInput(string Title)
     return splitString(command, ' ');
 }
 
-int applyArgOperator(string arg, char op)
+int evaluateExpression(const string &expression)
 {
-    vector<string> hs = splitString(arg, op);
-    int lhsVal = stoi(hs[0]);
-    int rhsVal = stoi(hs[1]);
+    istringstream iss(expression);
+    int result = 0;
+    char op = '+';
+    int operand;
 
-    if (op == '*')
+    while (iss >> operand)
     {
-        return lhsVal * rhsVal;
+        switch (op)
+        {
+        case '+':
+            result += operand;
+            break;
+        case '-':
+            result -= operand;
+            break;
+        case '*':
+            result *= operand;
+            break;
+        case '/':
+            if (operand != 0)
+                result /= operand;
+            else
+                throw runtime_error("Division by zero");
+            break;
+        default:
+            throw runtime_error("Invalid operator");
+        }
+
+        iss >> op;
     }
-    if (op == '/')
-    {
-        return lhsVal / rhsVal;
-    }
-    if (op == '+')
-    {
-        return lhsVal + rhsVal;
-    }
-    if (op == '-')
-    {
-        return lhsVal - rhsVal;
-    }
+
+    return result;
 }
 
 void poutResourceUsage()
@@ -92,6 +124,7 @@ int main()
         print("--------------------", "yellow");
         print("Tests:", "brightblue");
         print("bubblesort", "brightwhite");
+        print("quicksort", "brightwhite");
         print("--------------------", "yellow");
 
         // Input and Arguments
@@ -107,7 +140,7 @@ int main()
 
             if (operatorPos != string::npos)
             {
-                sortSize = applyArgOperator(arg, arg[operatorPos]);
+                sortSize = evaluateExpression(arg);
             }
             else
             {
@@ -115,54 +148,46 @@ int main()
             }
         }
 
-        // Master Handler
+        auto sorter = unique_ptr<SortAlgorithm>();
+
         if (args[0] == "bubblesort")
         {
-            // Init Bobble Sort with Sort Size
-            BubbleSort bubblesort(sortSize);
+            sorter = make_unique<BubbleSort>(sortSize);
+        }
+        else if (args[0] == "quicksort")
+        {
+            sorter = make_unique<QuickSort>(sortSize);
+        }
 
-            // Init Timer
-            Timer timer;
+        // Init Timer
+        Timer timer;
 
-            // Resource Usage
-            poutResourceUsage();
+        // Resource Usage
+        poutResourceUsage();
 
-            // CPP Bubblesort
-            {
-                timer.startTimer();
-                bubblesort.CPP();
+        // Print out initial array
+        // printArray(0, bubblesort.getToSort());
 
-                int timeToComplete = timer.endTimer();
-                print("     C++ Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-            }
+        // CPP
+        {
+            timer.startTimer();
 
-            // CPP Multi-thread Bubblesort
-            {
-                timer.startTimer();
-                bubblesort.CPPMT();
+            vector<int> sortedArray = sorter->CPP();
+            int timeToComplete = timer.endTimer();
 
-                int timeToComplete = timer.endTimer();
-                print("     C++ M/T Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-            }
+            print("     C++ " + args[0] + " took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+            // printArray(1, sortedArray);
+        }
 
-            // LUA Bubblesort
-            {
-                lua_State *L = luaL_newstate();
-                luaL_openlibs(L);
-                luabridge::LuaRef toSortTable = luabridge::newTable(L);
-                vector<int> toSort = bubblesort.getToSort();
+        // LUA
+        {
+            timer.startTimer();
 
-                for (size_t i = 0; i < toSort.size(); ++i)
-                {
-                    toSortTable[i + 1] = toSort[i];
-                }
+            vector<int> sortedArray = sorter->LUA();
+            int LUAtimeToComplete = timer.endTimer();
 
-                timer.startTimer();
-                bubblesort.LUA(L, toSortTable);
-
-                int LUAtimeToComplete = timer.endTimer();
-                print("     LUA Bubblesort took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-            }
+            print("     LUA " + args[0] + " took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+            // printArray(1, sortedArray);
         }
     }
 }
