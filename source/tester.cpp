@@ -242,8 +242,8 @@ int main()
             int sortSize = sorter->getToSortSize();
             string algorithm = sorter->getAlgo();
 
-            print("     C++ " + algorithm + " took " + getHighestTimeUnit(timeToCompleteCPP) + "(" + to_string(timeToCompleteCPP) + ")ms" + " to sort " + to_string(sortSize) + ".", "green");
-            print("     LUA " + algorithm + " took " + getHighestTimeUnit(timeToCompleteLUA) + "(" + to_string(timeToCompleteLUA) + ")ms" + " to sort " + to_string(sortSize) + ".", "green");
+            print("     C++ " + algorithm + " took " + getHighestTimeUnit(timeToCompleteCPP) + "(" + to_string(timeToCompleteCPP) + "ms)" + " to sort " + to_string(sortSize) + ".", "green");
+            print("     LUA " + algorithm + " took " + getHighestTimeUnit(timeToCompleteLUA) + "(" + to_string(timeToCompleteLUA) + "ms)" + " to sort " + to_string(sortSize) + ".", "green");
             // printArray(1, sortedArrayCPP);
             // printArray(1, sortedArrayLUA);
         }
