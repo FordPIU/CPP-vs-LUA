@@ -12,6 +12,9 @@
 
 //////////////////////////////
 
+/// @brief Prints out an arrays items
+/// @param inout 0 = "In", while 1 = "Out".
+/// @param array The array to print out
 void printArray(int inout, vector<int> array)
 {
     HANDLE col;
@@ -27,7 +30,11 @@ void printArray(int inout, vector<int> array)
     cout << endl;
 }
 
-vector<string> splitString(const string &input, char delimiter)
+/// @brief Split the string by delimiter
+/// @param input The String to Split
+/// @param delimiter The Character to split the string by
+/// @return vector of tokens, split by the delimiter
+vector<string> splitString(string input, char delimiter)
 {
     vector<string> tokens;
     stringstream ss(input);
@@ -41,13 +48,19 @@ vector<string> splitString(const string &input, char delimiter)
     return tokens;
 }
 
+/// @brief Request a input from the console
+/// @param Title Header/Title of the Request
+/// @return Splits the string by every space, so if the user inputs "hello world", it'll return {"hello", "world"}
 vector<string> requestInput(string Title)
 {
     string command = input(Title);
     return splitString(command, ' ');
 }
 
-int evaluateExpression(const string &expression)
+/// @brief Takes a string with a math operator, and performs the math operation
+/// @param expression Example: 500*2
+/// @return int completed math operation
+int evaluateExpression(string expression)
 {
     istringstream iss(expression);
     int result = 0;
@@ -77,6 +90,7 @@ int evaluateExpression(const string &expression)
     return result;
 }
 
+/// @brief Print out Memory Usage Information
 void poutResourceUsage()
 {
     // Total Virtual Memory
@@ -112,7 +126,6 @@ void poutResourceUsage()
 
 int main()
 {
-    // args are out of wack
     while (true)
     {
         print("--------------------", "yellow");
