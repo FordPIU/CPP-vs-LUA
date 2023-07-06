@@ -66,6 +66,9 @@
     "condition_variable": "cpp",
     "coroutine": "cpp",
     "resumable": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "iomanip": "cpp",
+    "xlocmon": "cpp",
+    "xloctime": "cpp"
   }
 }

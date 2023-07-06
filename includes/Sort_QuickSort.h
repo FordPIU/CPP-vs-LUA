@@ -6,10 +6,16 @@ class QuickSort : public SortAlgorithm
 {
 public:
     QuickSort(int param_sortSize) : SortAlgorithm(param_sortSize) {}
+
+    string getAlgo() override
+    {
+        return "QuickSort";
+    }
+
     vector<int> CPP() override
     {
         vector<int> arrayToSort = getToSort();
-        quickSort(arrayToSort, 0, arrayToSort.size() - 1);
+        quickSort(arrayToSort, 0, static_cast<int>(arrayToSort.size()) - 1);
         return arrayToSort;
     }
 
