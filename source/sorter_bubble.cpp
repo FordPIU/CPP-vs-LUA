@@ -79,17 +79,14 @@ vector<int> BubbleSort::LUA()
 
     LuaRef luaSortedArray = getGlobal(L, "cpp_toSort");
     vector<int> sortedArray;
-
-    if (lua_istable(L, -1))
+    size_t length = luaSortedArray.length();
+    
+    for (size_t i = 0; i < length; ++i)
     {
-        size_t length = luaSortedArray.length();
-        for (size_t i = 0; i < length; ++i)
+        LuaRef element = luaSortedArray[i + 1];
+        if (element.isNumber())
         {
-            LuaRef element = luaSortedArray[i + 1];
-            if (element.isNumber())
-            {
-                sortedArray.push_back(element.cast<int>());
-            }
+            sortedArray.push_back(element.cast<int>());
         }
     }
 
