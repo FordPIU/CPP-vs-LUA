@@ -9,6 +9,20 @@
 
 //////////////////////////////
 
+void printArray(int inout, vector<int> array)
+{
+    HANDLE col;
+    col = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(col, 11);
+
+    cout << endl
+         << ((inout == 0) ? "In: " : "Out: ");
+    for (auto &number : array)
+    {
+        cout << to_string(number) + ", ";
+    }
+}
+
 vector<string> splitString(const string &input, char delimiter)
 {
     vector<string> tokens;
@@ -141,30 +155,36 @@ int main()
             // Resource Usage
             poutResourceUsage();
 
+            // Print out initial array
+            printArray(0, bubblesort.getToSort());
+
             // CPP Bubblesort
             {
                 timer.startTimer();
-                bubblesort.CPP();
 
+                // vector<int> bubble = bubblesort.CPP();
                 int timeToComplete = timer.endTimer();
+
                 print("     C++ Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
             }
 
             // CPP Multi-thread Bubblesort
             {
                 timer.startTimer();
-                bubblesort.CPPMT();
 
+                vector<int> bubble = bubblesort.CPPMT();
                 int timeToComplete = timer.endTimer();
+
                 print("     C++ M/T Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
             }
 
             // LUA Bubblesort
             {
                 timer.startTimer();
-                bubblesort.LUA();
 
+                // vector<int> bubble = bubblesort.LUA();
                 int LUAtimeToComplete = timer.endTimer();
+
                 print("     LUA Bubblesort took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
             }
         }

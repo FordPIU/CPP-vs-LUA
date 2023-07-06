@@ -1,14 +1,17 @@
 #include <iostream>
 #include <thread>
-#include <optional>
+#include <mutex>
+
 #include "sorter_bubble.h"
+#include "console.h"
 
 using namespace luabridge;
 using namespace std;
+using namespace Console;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-optional<vector<int>> CPPBubbleSort(vector<int> arrayToSort, bool wantReturn = false)
+vector<int> CPPBubbleSort(vector<int> arrayToSort)
 {
     int arrayLength = arrayToSort.size();
     bool swapped;
@@ -29,45 +32,63 @@ optional<vector<int>> CPPBubbleSort(vector<int> arrayToSort, bool wantReturn = f
             break;
     }
 
-    if (wantReturn)
-    {
-        return arrayToSort;
-    }
+    return arrayToSort;
 }
 
-void BubbleSort::CPP()
+vector<int> BubbleSort::CPP()
 {
-    CPPBubbleSort(toSort);
+    return CPPBubbleSort(toSort);
 }
 
-void BubbleSort::CPPMT()
+vector<int> BubbleSort::CPPMT()
 {
     int arrayLength = toSort.size();
     int numThreads = thread::hardware_concurrency();
 
-    vector<thread> threads;
-    int chunkSize = arrayLength / numThreads;
-
-    for (int i = 0; i < numThreads - 1; ++i)
+    if (numThreads > arrayLength)
     {
-        vector<int> chunkArray(toSort.begin() + (i * chunkSize), toSort.begin() + ((i + 1) * chunkSize));
-        threads.emplace_back([&chunkArray]()
-                             { CPPBubbleSort(chunkArray, true); });
+        numThreads = arrayLength;
     }
 
-    vector<int> lastChunkArray(toSort.begin() + ((numThreads - 1) * chunkSize), toSort.begin() + arrayLength);
-    threads.emplace_back([&lastChunkArray]()
-                         { CPPBubbleSort(lastChunkArray, true); });
+    vector<thread> threads;
+    mutex chunksMutex;
+    int chunkSize = arrayLength / numThreads;
+
+    vector<vector<int>> sortedChunks(numThreads);
+
+    for (int i = 0; i < numThreads; ++i)
+    {
+        int start = i * chunkSize;
+        int end = (i == numThreads - 1) ? arrayLength : start + chunkSize;
+
+        vector<int> chunkArray(toSort.begin() + start, toSort.begin() + end);
+
+        threads.emplace_back([&chunkArray, &sortedChunks, &chunksMutex, i]()
+                             {
+            CPPBubbleSort(chunkArray);
+
+            lock_guard<mutex> lock(chunksMutex);
+
+            sortedChunks[i] = chunkArray; });
+    }
 
     for (auto &thread : threads)
     {
         thread.join();
     }
+
+    vector<int> mergedArray;
+    for (const auto &chunk : sortedChunks)
+    {
+        mergedArray.insert(mergedArray.end(), chunk.begin(), chunk.end());
+    }
+
+    return CPPBubbleSort(mergedArray);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-void LUABubbleSort(vector<int> arrayToSort)
+vector<int> LUABubbleSort(vector<int> arrayToSort)
 {
     lua_State *L = luaL_newstate();
     luaL_openlibs(L);
@@ -108,14 +129,33 @@ void LUABubbleSort(vector<int> arrayToSort)
         cout << "Error with lua code.\n" + string(lua_tostring(L, -1));
     }
 
+    LuaRef luaSortedArray = getGlobal(L, "cpp_toSort");
+    vector<int> sortedArray;
+
+    if (lua_istable(L, -1))
+    {
+        size_t length = luaSortedArray.length();
+        for (size_t i = 0; i < length; ++i)
+        {
+            LuaRef element = luaSortedArray[i + 1];
+            if (element.isNumber())
+            {
+                sortedArray.push_back(element.cast<int>());
+            }
+        }
+    }
+
     lua_close(L);
+
+    return sortedArray;
 }
 
-void BubbleSort::LUA()
+vector<int> BubbleSort::LUA()
 {
-    LUABubbleSort(toSort);
+    return LUABubbleSort(toSort);
 }
 
-void BubbleSort::LUAMT()
+vector<int> BubbleSort::LUAMT()
 {
+    return toSort;
 }

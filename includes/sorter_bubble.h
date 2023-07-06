@@ -31,10 +31,10 @@ public:
 
     std::vector<int> getToSort() { return toSort; }
 
-    void CPP();
-    void CPPMT();
-    void LUA();
-    void LUAMT();
+    std::vector<int> CPP();
+    std::vector<int> CPPMT();
+    std::vector<int> LUA();
+    std::vector<int> LUAMT();
 
 private:
     std::vector<int> toSort;
