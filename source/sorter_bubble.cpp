@@ -7,59 +7,19 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-void bubbleSort(vector<int> &arr, int start, int end)
+void CPPBubbleSort(vector<int> arrayToSort)
 {
-    for (int i = start; i < end - 1; ++i)
-    {
-        for (int j = start; j < end - i - 1; ++j)
-        {
-            if (arr[j] > arr[j + 1])
-            {
-                swap(arr[j], arr[j + 1]);
-            }
-        }
-    }
-}
-
-void merge(vector<int> &arr, int start, int mid, int end)
-{
-    vector<int> temp(end - start);
-    int i = start, j = mid, k = 0;
-
-    while (i < mid && j < end)
-    {
-        if (arr[i] <= arr[j])
-            temp[k++] = arr[i++];
-        else
-            temp[k++] = arr[j++];
-    }
-
-    while (i < mid)
-        temp[k++] = arr[i++];
-
-    while (j < end)
-        temp[k++] = arr[j++];
-
-    for (int p = 0; p < k; ++p)
-        arr[start + p] = temp[p];
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-
-void BubbleSort::CPP()
-{
-    vector<int> sortedArray = toSort;
-    int n = sortedArray.size();
+    int arrayLength = arrayToSort.size();
     bool swapped;
 
-    for (int i = 0; i < n - 1; ++i)
+    for (int i = 0; i < arrayLength - 1; ++i)
     {
         swapped = false;
-        for (int j = 0; j < n - i - 1; ++j)
+        for (int j = 0; j < arrayLength - i - 1; ++j)
         {
-            if (sortedArray[j] > sortedArray[j + 1])
+            if (arrayToSort[j] > arrayToSort[j + 1])
             {
-                swap(sortedArray[j], sortedArray[j + 1]);
+                swap(arrayToSort[j], arrayToSort[j + 1]);
                 swapped = true;
             }
         }
@@ -69,39 +29,34 @@ void BubbleSort::CPP()
     }
 }
 
+void BubbleSort::CPP()
+{
+    CPPBubbleSort(toSort);
+}
+
 void BubbleSort::CPPMT()
 {
-    vector<int> sortedArray = toSort;
-    int n = sortedArray.size();
-    int numThreads = thread::hardware_concurrency(); // Get the number of available threads
+    int arrayLength = toSort.size();
+    int numThreads = thread::hardware_concurrency();
 
     vector<thread> threads;
-    int chunkSize = n / numThreads; // Divide the array into equal chunks
+    int chunkSize = arrayLength / numThreads;
 
-    // Create threads and assign sorting tasks
     for (int i = 0; i < numThreads - 1; ++i)
     {
-        threads.emplace_back(bubbleSort, ref(sortedArray), i * chunkSize, (i + 1) * chunkSize);
+        vector<int> chunkArray(toSort.begin() + (i * chunkSize), toSort.begin() + ((i + 1) * chunkSize));
+        threads.emplace_back([&chunkArray]()
+                             { CPPBubbleSort(chunkArray); });
     }
-    // Handle the remaining portion of the array
-    threads.emplace_back(bubbleSort, ref(sortedArray), (numThreads - 1) * chunkSize, n);
 
-    // Wait for all threads to finish
+    vector<int> lastChunkArray(toSort.begin() + ((numThreads - 1) * chunkSize), toSort.begin() + arrayLength);
+    threads.emplace_back([&lastChunkArray]()
+                         { CPPBubbleSort(lastChunkArray); });
+
     for (auto &thread : threads)
     {
         thread.join();
     }
-
-    // Merge the sorted chunks
-    for (int i = 0; i < numThreads - 1; ++i)
-    {
-        merge(sortedArray, i * chunkSize, (i + 1) * chunkSize, (i + 2) * chunkSize);
-    }
-
-    // Handle the remaining portion of the array
-    merge(sortedArray, (numThreads - 1) * chunkSize, n - chunkSize, n);
-
-    // sortedArray now contains the fully sorted array
 }
 
 void BubbleSort::LUA(lua_State *L, luabridge::LuaRef toSortTable)
@@ -137,4 +92,8 @@ void BubbleSort::LUA(lua_State *L, luabridge::LuaRef toSortTable)
     }
 
     lua_close(L);
+}
+
+void BubbleSort::LUAMT(lua_State *L, luabridge::LuaRef toSortTable)
+{
 }
