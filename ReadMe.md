@@ -2,6 +2,8 @@
 
 CPPvLUA is a project that compares the performance of sorting algorithms implemented in C++ and Lua programming languages. It provides a framework for testing various sorting algorithms and measuring their execution time.
 
+![Preview](image.png)
+
 ## Prerequisites
 
 - CMake
