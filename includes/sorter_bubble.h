@@ -5,9 +5,6 @@
 #include <random>
 #include <algorithm>
 
-#include <lua.hpp>
-#include <LuaBridge/LuaBridge.h>
-
 class BubbleSort
 {
 public:
