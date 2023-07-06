@@ -4,7 +4,10 @@
 #include "getResources.h"
 #include "getHighestUnit.h"
 
-#include "sorter_bubble.h"
+#include "SortAlgorithm.h"
+#include "Sort_BubbleSort.h"
+#include "Sort_QuickSort.h"
+
 #include "timer.h"
 
 //////////////////////////////
@@ -121,6 +124,7 @@ int main()
         print("--------------------", "yellow");
         print("Tests:", "brightblue");
         print("bubblesort", "brightwhite");
+        print("quicksort", "brightwhite");
         print("--------------------", "yellow");
 
         // Input and Arguments
@@ -144,42 +148,46 @@ int main()
             }
         }
 
-        // Master Handler
+        auto sorter = unique_ptr<SortAlgorithm>();
+
         if (args[0] == "bubblesort")
         {
-            // Init Bobble Sort with Sort Size
-            BubbleSort bubblesort(sortSize);
+            sorter = make_unique<BubbleSort>(sortSize);
+        }
+        else if (args[0] == "quicksort")
+        {
+            sorter = make_unique<QuickSort>(sortSize);
+        }
 
-            // Init Timer
-            Timer timer;
+        // Init Timer
+        Timer timer;
 
-            // Resource Usage
-            poutResourceUsage();
+        // Resource Usage
+        poutResourceUsage();
 
-            // Print out initial array
-            // printArray(0, bubblesort.getToSort());
+        // Print out initial array
+        // printArray(0, bubblesort.getToSort());
 
-            // CPP Bubblesort
-            {
-                timer.startTimer();
+        // CPP
+        {
+            timer.startTimer();
 
-                vector<int> cppbubble = bubblesort.CPP();
-                int timeToComplete = timer.endTimer();
+            vector<int> sortedArray = sorter->CPP();
+            int timeToComplete = timer.endTimer();
 
-                print("     C++ Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-                printArray(1, cppbubble);
-            }
+            print("     C++ " + args[0] + " took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+            // printArray(1, sortedArray);
+        }
 
-            // LUA Bubblesort
-            {
-                timer.startTimer();
+        // LUA
+        {
+            timer.startTimer();
 
-                vector<int> luabubble = bubblesort.LUA();
-                int LUAtimeToComplete = timer.endTimer();
+            vector<int> sortedArray = sorter->LUA();
+            int LUAtimeToComplete = timer.endTimer();
 
-                print("     LUA Bubblesort took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-                printArray(1, luabubble);
-            }
+            print("     LUA " + args[0] + " took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+            // printArray(1, sortedArray);
         }
     }
 }
