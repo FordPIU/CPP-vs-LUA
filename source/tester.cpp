@@ -163,22 +163,22 @@ int main()
             {
                 timer.startTimer();
 
-                vector<int> bubble = bubblesort.CPP();
+                vector<int> cppbubble = bubblesort.CPP();
                 int timeToComplete = timer.endTimer();
 
                 print("     C++ Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-                printArray(1, bubble);
+                printArray(1, cppbubble);
             }
 
             // LUA Bubblesort
             {
                 timer.startTimer();
 
-                vector<int> bubble = bubblesort.LUA();
+                vector<int> luabubble = bubblesort.LUA();
                 int LUAtimeToComplete = timer.endTimer();
 
                 print("     LUA Bubblesort took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-                printArray(1, bubble);
+                printArray(1, luabubble);
             }
         }
     }
