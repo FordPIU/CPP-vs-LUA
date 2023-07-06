@@ -175,7 +175,7 @@ int main()
             vector<int> sortedArray = sorter->CPP();
             int timeToComplete = timer.endTimer();
 
-            print("     C++ " + args[0] + " took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+            print("     C++ " + args[0] + " took " + getHighestTimeUnit(timeToComplete) + "(" + to_string(timeToComplete) + "ms)" + " to sort " + to_string(sortSize) + ".", "green");
             // printArray(1, sortedArray);
         }
 
@@ -184,9 +184,9 @@ int main()
             timer.startTimer();
 
             vector<int> sortedArray = sorter->LUA();
-            int LUAtimeToComplete = timer.endTimer();
+            int timeToComplete = timer.endTimer();
 
-            print("     LUA " + args[0] + " took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+            print("     LUA " + args[0] + " took " + getHighestTimeUnit(timeToComplete) + "(" + to_string(timeToComplete) + "ms)" + " to sort " + to_string(sortSize) + ".", "green");
             // printArray(1, sortedArray);
         }
     }
