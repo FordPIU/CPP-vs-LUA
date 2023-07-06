@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "main.h"
 #include "getResources.h"
 #include "getHighestUnit.h"
@@ -27,28 +29,40 @@ vector<string> requestInput(string Title)
     return splitString(command, ' ');
 }
 
-int applyArgOperator(string arg, char op)
+int evaluateExpression(const string &expression)
 {
-    vector<string> hs = splitString(arg, op);
-    int lhsVal = stoi(hs[0]);
-    int rhsVal = stoi(hs[1]);
+    istringstream iss(expression);
+    int result = 0;
+    char op = '+';
+    int operand;
 
-    if (op == '*')
+    while (iss >> operand)
     {
-        return lhsVal * rhsVal;
+        switch (op)
+        {
+        case '+':
+            result += operand;
+            break;
+        case '-':
+            result -= operand;
+            break;
+        case '*':
+            result *= operand;
+            break;
+        case '/':
+            if (operand != 0)
+                result /= operand;
+            else
+                throw runtime_error("Division by zero");
+            break;
+        default:
+            throw runtime_error("Invalid operator");
+        }
+
+        iss >> op;
     }
-    if (op == '/')
-    {
-        return lhsVal / rhsVal;
-    }
-    if (op == '+')
-    {
-        return lhsVal + rhsVal;
-    }
-    if (op == '-')
-    {
-        return lhsVal - rhsVal;
-    }
+
+    return result;
 }
 
 void poutResourceUsage()
@@ -107,7 +121,7 @@ int main()
 
             if (operatorPos != string::npos)
             {
-                sortSize = applyArgOperator(arg, arg[operatorPos]);
+                sortSize = evaluateExpression(arg);
             }
             else
             {
