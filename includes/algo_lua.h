@@ -37,7 +37,9 @@ namespace lua
     {
         vector<int> orgArray = toSort;
         lua_State *L = luaL_newstate();
+
         luaL_openlibs(L);
+
         LuaRef tableToSort = newTable(L);
 
         for (size_t i = 0; i < orgArray.size(); ++i)
@@ -51,6 +53,7 @@ namespace lua
 
         if (LUACode.empty())
         {
+            lua_close(L);
             throw runtime_error("Unable to load LUA code.");
         }
 
@@ -74,7 +77,9 @@ namespace lua
             }
         }
 
-        lua_close(L);
+        // lua_close(L);
+        // idk why, but removing the Lua_close fixes memory issues.
+        // hopefully that doesn't lead to it not closing, pretty sure it self destructs open the return.
 
         return sortedArray;
     }
