@@ -62,6 +62,10 @@
     "stop_token": "cpp",
     "thread": "cpp",
     "fstream": "cpp",
-    "mutex": "cpp"
+    "mutex": "cpp",
+    "condition_variable": "cpp",
+    "coroutine": "cpp",
+    "resumable": "cpp",
+    "future": "cpp"
   }
 }

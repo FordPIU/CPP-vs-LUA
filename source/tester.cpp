@@ -21,6 +21,7 @@ void printArray(int inout, vector<int> array)
     {
         cout << to_string(number) + ", ";
     }
+    cout << endl;
 }
 
 vector<string> splitString(const string &input, char delimiter)
@@ -156,36 +157,28 @@ int main()
             poutResourceUsage();
 
             // Print out initial array
-            printArray(0, bubblesort.getToSort());
+            // printArray(0, bubblesort.getToSort());
 
             // CPP Bubblesort
             {
                 timer.startTimer();
 
-                // vector<int> bubble = bubblesort.CPP();
+                vector<int> bubble = bubblesort.CPP();
                 int timeToComplete = timer.endTimer();
 
                 print("     C++ Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
-            }
-
-            // CPP Multi-thread Bubblesort
-            {
-                timer.startTimer();
-
-                vector<int> bubble = bubblesort.CPPMT();
-                int timeToComplete = timer.endTimer();
-
-                print("     C++ M/T Bubblesort took " + getHighestTimeUnit(timeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+                printArray(1, bubble);
             }
 
             // LUA Bubblesort
             {
                 timer.startTimer();
 
-                // vector<int> bubble = bubblesort.LUA();
+                vector<int> bubble = bubblesort.LUA();
                 int LUAtimeToComplete = timer.endTimer();
 
                 print("     LUA Bubblesort took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");
+                printArray(1, bubble);
             }
         }
     }
