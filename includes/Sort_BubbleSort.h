@@ -7,6 +7,11 @@ class BubbleSort : public SortAlgorithm
 public:
     BubbleSort(int param_sortSize) : SortAlgorithm(param_sortSize) {}
 
+    string getAlgo() override
+    {
+        return "BubbleSort";
+    }
+
     vector<int> CPP() override
     {
         vector<int> orgArray = getToSort();

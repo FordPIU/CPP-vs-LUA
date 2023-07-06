@@ -29,6 +29,9 @@ public:
     }
 
     vector<int> getToSort() { return toSort; }
+    int getToSortSize() { return toSort.size(); }
+
+    virtual string getAlgo() = 0;
 
     virtual vector<int> CPP() = 0;
     virtual vector<int> LUA() = 0;

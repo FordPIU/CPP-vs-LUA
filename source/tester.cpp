@@ -67,12 +67,6 @@ int evaluateExpression(const string &expression)
         case '*':
             result *= operand;
             break;
-        case '/':
-            if (operand != 0)
-                result /= operand;
-            else
-                throw runtime_error("Division by zero");
-            break;
         default:
             throw runtime_error("Invalid operator");
         }
@@ -118,9 +112,9 @@ void poutResourceUsage()
 
 int main()
 {
+    // args are out of wack
     while (true)
     {
-        // Tests Print
         print("--------------------", "yellow");
         print("Tests:", "brightblue");
         print("bubblesort", "brightwhite");
@@ -130,33 +124,55 @@ int main()
         // Input and Arguments
         vector<string> args = requestInput("Execute Test");
 
-        // Gets the optional Argument of sort size.
-        int sortSize = 100;
+        // Parse sort sizes and algorithms
+        vector<int> sortSizes;
+        vector<string> algorithms;
 
-        if (args.size() > 1)
+        // Process arguments
+        string sortSizeArg = args[1];
+
+        if (sortSizeArg.find_first_of('/') != string::npos)
         {
-            string arg = args[1];
-            size_t operatorPos = arg.find_first_of("*/+-");
+            vector<string> argSortSizes = splitString(sortSizeArg, '/');
 
-            if (operatorPos != string::npos)
+            for (string size : argSortSizes)
             {
-                sortSize = evaluateExpression(arg);
+                if (size.find_first_of("*+-") != string::npos)
+                {
+                    sortSizes.push_back(evaluateExpression(size));
+                }
+                else
+                {
+                    sortSizes.push_back(stoi(size));
+                }
+            }
+        }
+        else
+        {
+            if (sortSizeArg.find_first_of("*+-") != string::npos)
+            {
+                sortSizes.push_back(evaluateExpression(sortSizeArg));
             }
             else
             {
-                sortSize = stoi(arg);
+                sortSizes.push_back(stoi(sortSizeArg));
             }
         }
 
-        auto sorter = unique_ptr<SortAlgorithm>();
+        // Split algorithms by '/'
+        string algoArg = args[0];
+        if (algoArg.find_first_of('/') != string::npos)
+        {
+            vector<string> argAlgos = splitString(algoArg, '/');
 
-        if (args[0] == "bubblesort")
-        {
-            sorter = make_unique<BubbleSort>(sortSize);
+            for (string algo : argAlgos)
+            {
+                algorithms.push_back(algo);
+            }
         }
-        else if (args[0] == "quicksort")
+        else
         {
-            sorter = make_unique<QuickSort>(sortSize);
+            algorithms.push_back(algoArg);
         }
 
         // Init Timer
@@ -165,29 +181,58 @@ int main()
         // Resource Usage
         poutResourceUsage();
 
-        // Print out initial array
-        // printArray(0, bubblesort.getToSort());
+        // Sort Algorithms
+        vector<unique_ptr<SortAlgorithm>> sorters;
 
-        // CPP
+        for (string algorithm : algorithms)
         {
-            timer.startTimer();
-
-            vector<int> sortedArray = sorter->CPP();
-            int timeToComplete = timer.endTimer();
-
-            print("     C++ " + args[0] + " took " + getHighestTimeUnit(timeToComplete) + "(" + to_string(timeToComplete) + "ms)" + " to sort " + to_string(sortSize) + ".", "green");
-            // printArray(1, sortedArray);
+            if (algorithm == "bubblesort")
+            {
+                for (int size : sortSizes)
+                {
+                    sorters.push_back(make_unique<BubbleSort>(size));
+                }
+            }
+            else if (algorithm == "quicksort")
+            {
+                for (int size : sortSizes)
+                {
+                    sorters.push_back(make_unique<QuickSort>(size));
+                }
+            }
+            else
+            {
+                print("Invalid algorithm: " + algorithm, "red");
+                continue;
+            }
         }
 
-        // LUA
+        // Sort and measure time
+        vector<int> cppTimes;
+        vector<int> luaTimes;
+
+        for (const auto &sorter : sorters)
         {
+            print("\n");
+            // CPP
             timer.startTimer();
+            vector<int> sortedArrayCPP = sorter->CPP();
+            int timeToCompleteCPP = timer.endTimer();
+            cppTimes.push_back(timeToCompleteCPP);
 
-            vector<int> sortedArray = sorter->LUA();
-            int timeToComplete = timer.endTimer();
+            // LUA
+            timer.startTimer();
+            vector<int> sortedArrayLUA = sorter->LUA();
+            int timeToCompleteLUA = timer.endTimer();
+            luaTimes.push_back(timeToCompleteLUA);
 
-            print("     LUA " + args[0] + " took " + getHighestTimeUnit(timeToComplete) + "(" + to_string(timeToComplete) + "ms)" + " to sort " + to_string(sortSize) + ".", "green");
-            // printArray(1, sortedArray);
+            int sortSize = sorter->getToSortSize();
+            string algorithm = sorter->getAlgo();
+
+            print("     C++ " + algorithm + " took " + getHighestTimeUnit(timeToCompleteCPP) + "(" + to_string(timeToCompleteCPP) + ")ms" + " to sort " + to_string(sortSize) + ".", "green");
+            print("     LUA " + algorithm + " took " + getHighestTimeUnit(timeToCompleteLUA) + "(" + to_string(timeToCompleteLUA) + ")ms" + " to sort " + to_string(sortSize) + ".", "green");
+            // printArray(1, sortedArrayCPP);
+            // printArray(1, sortedArrayLUA);
         }
     }
 }

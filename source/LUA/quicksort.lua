@@ -22,7 +22,10 @@ local function quickSort(array, low, high)
 end
 
 local function LUAQuickSort()
-    local array = cpp_toSort
+    local array = {}
+    for i = 1, #cpp_toSort do
+        array[i] = cpp_toSort[i]
+    end
 
     local size = #array
     local newArray = {}
