@@ -161,18 +161,8 @@ int main()
 
             // LUA Bubblesort
             {
-                lua_State *L = luaL_newstate();
-                luaL_openlibs(L);
-                luabridge::LuaRef toSortTable = luabridge::newTable(L);
-                vector<int> toSort = bubblesort.getToSort();
-
-                for (size_t i = 0; i < toSort.size(); ++i)
-                {
-                    toSortTable[i + 1] = toSort[i];
-                }
-
                 timer.startTimer();
-                bubblesort.LUA(L, toSortTable);
+                bubblesort.LUA();
 
                 int LUAtimeToComplete = timer.endTimer();
                 print("     LUA Bubblesort took " + getHighestTimeUnit(LUAtimeToComplete) + " to sort " + to_string(sortSize) + ".", "green");

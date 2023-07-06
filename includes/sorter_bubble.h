@@ -33,8 +33,8 @@ public:
 
     void CPP();
     void CPPMT();
-    void LUA(lua_State *L, luabridge::LuaRef toSortTable);
-    void LUAMT(lua_State *L, luabridge::LuaRef toSortTable);
+    void LUA();
+    void LUAMT();
 
 private:
     std::vector<int> toSort;

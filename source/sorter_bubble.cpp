@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <optional>
 #include "sorter_bubble.h"
 
 using namespace luabridge;
@@ -7,7 +8,7 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-void CPPBubbleSort(vector<int> arrayToSort)
+optional<vector<int>> CPPBubbleSort(vector<int> arrayToSort, bool wantReturn = false)
 {
     int arrayLength = arrayToSort.size();
     bool swapped;
@@ -26,6 +27,11 @@ void CPPBubbleSort(vector<int> arrayToSort)
 
         if (!swapped)
             break;
+    }
+
+    if (wantReturn)
+    {
+        return arrayToSort;
     }
 }
 
@@ -46,12 +52,12 @@ void BubbleSort::CPPMT()
     {
         vector<int> chunkArray(toSort.begin() + (i * chunkSize), toSort.begin() + ((i + 1) * chunkSize));
         threads.emplace_back([&chunkArray]()
-                             { CPPBubbleSort(chunkArray); });
+                             { CPPBubbleSort(chunkArray, true); });
     }
 
     vector<int> lastChunkArray(toSort.begin() + ((numThreads - 1) * chunkSize), toSort.begin() + arrayLength);
     threads.emplace_back([&lastChunkArray]()
-                         { CPPBubbleSort(lastChunkArray); });
+                         { CPPBubbleSort(lastChunkArray, true); });
 
     for (auto &thread : threads)
     {
@@ -59,9 +65,20 @@ void BubbleSort::CPPMT()
     }
 }
 
-void BubbleSort::LUA(lua_State *L, luabridge::LuaRef toSortTable)
+////////////////////////////////////////////////////////////////////////////////////////
+
+void LUABubbleSort(vector<int> arrayToSort)
 {
-    luabridge::setGlobal(L, toSortTable, "cpp_toSort");
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+    LuaRef tableToSort = newTable(L);
+
+    for (size_t i = 0; i < arrayToSort.size(); ++i)
+    {
+        tableToSort[i + 1] = arrayToSort[i];
+    }
+
+    setGlobal(L, tableToSort, "cpp_toSort");
 
     string LUACode = R"(
     local sortedArray = {}
@@ -94,6 +111,11 @@ void BubbleSort::LUA(lua_State *L, luabridge::LuaRef toSortTable)
     lua_close(L);
 }
 
-void BubbleSort::LUAMT(lua_State *L, luabridge::LuaRef toSortTable)
+void BubbleSort::LUA()
+{
+    LUABubbleSort(toSort);
+}
+
+void BubbleSort::LUAMT()
 {
 }
