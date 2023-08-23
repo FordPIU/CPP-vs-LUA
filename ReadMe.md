@@ -41,7 +41,3 @@ git clone https://github.com/your-username/CPPvLUA.git
 ## Contributing
 
 Contributions to the CPPvLUA project are welcome! If you find any issues or want to suggest improvements, please submit an issue or a pull request.
-
-## License
-
-This project is licensed under the GNU General Public License v3.0. See the `LICENSE` file for more information.
